@@ -1,20 +1,19 @@
 @import "sassy-maps";
 
+// Private map that holds the namespaces
 $__sassy-namespaces: ();
 
-@mixin create-namespace($name) {
-  $__sassy-namespaces: map-set($__sassy-namespaces, $name, ());
-}
-
+// Add a key-value pair to an existing namespace, or to a new one if it doesn't already exist
+// Returns the updated namespace map
 @function namespace-set($name, $args...) {
   $length: length($args);
-  $namespace: map-get($__sassy-namespaces, $name);
+  $namespace: map-get($__sassy-namespaces, $name) or ($name: ());
   
   @if length($args) == 1 {
     @if type-of(nth($args, 1)) == map {
       $namespace: map-merge($namespace, nth($args, 1));
     } @else {
-      @warn "Must pass either a map or 2 or more values."
+      @warn "Must pass either a map or a key and a value.";
     }
   }
   @else {
@@ -31,6 +30,9 @@ $__sassy-namespaces: ();
   @return $namespace;
 }
 
+
+// Return value for key of a namespace
+// Returns the namespace map
 @function namespace-get($name, $args...) {
   $length: length($args);
   $namespace: map-get($__sassy-namespaces, $name);
@@ -48,6 +50,13 @@ $__sassy-namespaces: ();
   }
 }
 
+// Mixin alias of namespace-set() function
 @mixin namespace-set($name, $args...) {
   $namespace: namespace-set($name, $args...);
+}
+
+
+// Return namespace map if it exists, else initialize an empty one
+@function namespace($name) {
+  @return namespace-get($name) or namespace-set($name);
 }

@@ -107,16 +107,12 @@ $namespace-2: namespace(color);
 
 /*
   $namespace-1: (
-    color: (
-      primary: red
-    )
+    primary: red
   )
 
   $namespace-2: (
-    color: (
-      primary: red,
-      secondary: green
-    )
+    primary: red,
+    secondary: green
   )
 */
 ```
