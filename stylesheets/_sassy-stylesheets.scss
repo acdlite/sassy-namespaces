@@ -70,6 +70,6 @@ $__sassy-namespaces: ();
   $namespace: namespace($name, $args...);
 }
 
-@mixin namespace-create($name) {
-  @include namespace-set($name);
+@mixin namespace-create($name, $args...) {
+  @include namespace-set($name, $args...);
 }

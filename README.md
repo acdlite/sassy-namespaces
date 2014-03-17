@@ -1,14 +1,14 @@
 Sassy Namespaces
 ================
 
-Sass 3.3 brought us maps, which are great for organizing related values into groups, but the syntax is a bit tedious. Sassy Namespaces offers pattern for creating and accessing namespaces using Sass maps.
+Sass 3.3 brought us maps, which are great for grouping related values, but the syntax is a bit tedious. Sassy Namespaces offers a pattern for creating and accessing namespaces using Sass maps.
 
 Yes, it's essentially a wrapper around the excellent [Sassy Maps](https://github.com/Team-Sass/Sassy-Maps) extension.
 
 The problem
 -----------
 
-In vanilla Sass, even single-level namespaces are a bit of hassle:
+In vanilla Sass, even single-level namespaces are a bit of a chore:
 
 ```scss
 // Create "color" namespace
@@ -21,15 +21,19 @@ output {
 }
 ```
 
-You could define functions/mixins to streamline the process:
+A partial solution is to define wrapper functions/mixins that abstract away the ugliness:
 
 ```scss
 // Create "color" namespace
 $color: ();
 
+@function color-set($key, $value) {
+  @return $map-merge($color, ($key: $value));
+}
+
 // Setter
-@mixin set-color($key, $value) {
-  $color: $map-merge($color, ($key: $value));
+@mixin color-set($key, $value) {
+  $color: color-set($key, $value);
 }
 
 // Getter
@@ -38,7 +42,7 @@ $color: ();
 }
 
 // Add key-value pair
-@include set-color(primary, red);
+@include color-set(primary, red);
 output {
   foo: color(primary); // foo: red
 }
@@ -46,14 +50,14 @@ output {
 
 But this quickly gets tiresome, especially once you try to create namespaces with more than one level of hierarchy.
 
-Sass namespaces, minus the headaches
+Namespaces, minus the headaches
 ------------------------------------
 
-Here's how you do it with Sassy Namespaces:
+With Sassy Namespaces, maps are created and used internally. You don't ever have to deal with them directly. Easy as:
 
 ```scss
 // Create a "color" namespace
-@include namespace-create(color);
+@include namespace-create(color); // (This step can be skipped)
 // Add key-value pair
 @include namespace-set(color, primary, red);
 ouput {
@@ -61,11 +65,9 @@ ouput {
 }
 ```
 
-Maps are created and used internally, but you don't ever have to deal with them.
-
 It's possible streamline to this even further. `namespace-set()` will create a namespace if it doesn't exist, so we can skip `namespace-create()`.
 
-Also, instead of calling `namespace-set()` and `namespace-get()`, we can replace both with the wrapper function/mixin `namespace()`, which will either get or set as is appropriate. This comes in handy when creating aliases:
+Also, instead of calling `namespace-set()` and `namespace-get()`, we can replace both with the wrapper function/mixin `namespace()`, which will either get or set as is appropriate. This comes in handy when creating wrapper functions/mixins:
 
 ```scss
 // Alias color() to namespace(color)
@@ -78,8 +80,8 @@ Also, instead of calling `namespace-set()` and `namespace-get()`, we can replace
 }
 
 @include color(primary, red);
-foo {
-  bar: color(primary); // bar: red
+output {
+  foo: color(primary); // foo: red
 }
 ```
 
@@ -90,9 +92,9 @@ If you want to set multiple values at once, without calling `namespace-set()` ov
 $map: (primary: red, secondary: green)
 
 @include namespace-set(color, $map);
-foo {
-  bar: namespace-get(color, primary); // bar: red
-  baz: namespace-get(color, secondary); // baz: green
+output {
+  foo: namespace-get(color, primary); // foo: red
+  bar: namespace-get(color, secondary); // bar: green
 }
 ```
 
@@ -100,8 +102,8 @@ And, since Sassy Namespaces uses Sassy Maps internally, hierarchical namespaces 
 
 ```scss
 @include namespace-set(color, text link hover, green);
-foo {
-  bar: namespace-get(color, text link hover); // bar: green
+output {
+  foo: namespace-get(color, text link hover); // foo: green
 }
 ```
 
@@ -109,10 +111,10 @@ At any time, you can return the underlying namespace map:
 
 ```scss
 @include namespace-set(color, primary, red);
-$namespace-1: namespace(color);
+$namespace-1: namespace-get(color);
 
 @include namespace-set(color, secondary, green);
-$namespace-2: namespace(color);
+$namespace-2: namespace-get(color);
 
 /*
   $namespace-1: (
