@@ -48,7 +48,6 @@ Sass namespaces, minus the headaches
 Here's how you do it with Sassy Namespaces:
 
 ```scss
-@include create-namespace(color);
 @include namespace-set(color, primary, red);
 foo {
   bar: namespace-get(color, primary); // bar: red;
@@ -57,7 +56,7 @@ foo {
 
 Maps are created and used internally, but you don't ever have to deal with them.
 
-It's still a good idea to create convenience functions/mixins. Pretty straightfoward:
+It's still a good idea to create convenience functions/mixins. Pretty straightfoward. Here's an example:
 
 ```scss
 @mixin set-color($args...) {
@@ -87,7 +86,7 @@ foo {
 }
 ```
 
-And, since Sassy Namespaces uses Sassy Maps internally, hierarchical namespaces are free:
+And, since Sassy Namespaces uses Sassy Maps internally, hierarchical namespaces are easy, too:
 
 ```scss
 @include namespace-set(color, text link hover, green);
