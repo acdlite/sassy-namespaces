@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   # If more than one author, comma separate inside of the brackets
   s.email = ["acdlite@me.com"]
   # URL of the extension
-  # s.homepage = "http://extension.com"
+  s.homepage = "https://github.com/acdlite/sassy-namespaces"
 
   # Gem Files
   # These are the files to be included in your Compass extension.
