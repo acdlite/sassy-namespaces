@@ -1,36 +1,36 @@
 # Replace extension with the name of your extension's .rb file
-require './lib/extension'
+require './lib/sassy-namespaces'
 
 Gem::Specification.new do |s|
   # Release Specific Information
   #  Replace Extension with the name you used in your extension.rb
-  #   in the mdodule with version and date.
-  s.version = Extension::VERSION
-  s.date = Extension::DATE
+  #   in the module with version and date.
+  s.version = SassyNamespaces::VERSION
+  s.date = SassyNamespaces::DATE
 
   # Gem Details
   # Replace "extension" with the name of your extension
-  s.name = "extension"
-  s.rubyforge_project = "extension"
+  s.name = "sassy-namespaces"
+  s.rubyforge_project = "sassy-namespaces"
   # Description of your extension
-  s.description = %q{A generalized Compass extension to build off of}
+  s.description = %q{Namespaces in Sass, minus the headaches.}
   # A summary of your Compass extension. Should be different than Description
-  s.summary = %q{An easy to use system for writing and managing media queries.}
+  s.summary = %q{Syntactic sugar for using maps as namespaces.}
   # The names of the author(s) of the extension.
   # If more than one author, comma separate inside of the brackets
-  s.authors = ["First Last"]
+  s.authors = ["Andrew Clark"]
   # The email address(es) of the author(s)
   # If more than one author, comma separate inside of the brackets
-  s.email = ["firstlast@extension.com"]
+  s.email = ["acdlite@me.com"]
   # URL of the extension
-  s.homepage = "http://extension.com"
+  # s.homepage = "http://extension.com"
 
   # Gem Files
   # These are the files to be included in your Compass extension.
   # Uncomment those that you use.
 
   # README file
-  # s.files = ["README.md"]
+  s.files = ["README.md"]
 
   # CHANGELOG
   # s.files += ["CHANGELOG.md"]
@@ -39,7 +39,7 @@ Gem::Specification.new do |s|
   s.files += Dir.glob("lib/**/*.*")
 
   # Sass Files
-  # s.files += Dir.glob("stylesheets/**/*.*")
+  s.files += Dir.glob("stylesheets/**/*.*")
 
   # Template Files
   # s.files += Dir.glob("templates/**/*.*")
@@ -50,10 +50,7 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.6}
 
   # Gems Dependencies
-  # Gem names and versions that are required for your Compass extension.
-  # These are Gem dependencies, not Compass dependencies. Including gems
-  #  here will make sure the relevant gem and version are installed on the
-  #  user's system when installing your gem.
-  s.add_dependency("sass",      [">=3.2.0"])
-  s.add_dependency("compass",   [">= 0.12.1"])
+  s.add_dependency("sass",       [">= 3.3"])
+  s.add_dependency("compass",    [">= 0.12"])
+  s.add_dependency("sassy-maps", [">= 0.3.2"])
 end

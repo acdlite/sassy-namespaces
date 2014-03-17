@@ -1,0 +1,53 @@
+@import "sassy-maps";
+
+$__sassy-namespaces: ();
+
+@mixin create-namespace($name) {
+  $__sassy-namespaces: map-set($__sassy-namespaces, $name, ());
+}
+
+@function namespace-set($name, $args...) {
+  $length: length($args);
+  $namespace: map-get($__sassy-namespaces, $name);
+  
+  @if length($args) == 1 {
+    @if type-of(nth($args, 1)) == map {
+      $namespace: map-merge($namespace, nth($args, 1));
+    } @else {
+      @warn "Must pass either a map or 2 or more values."
+    }
+  }
+  @else {
+    $keys: nth($args, 1);
+    
+    @if length($keys) == 1 {
+      $namespace: map-set($namespace, $args...);
+    } @else {
+      $namespace: map-set-deep($namespace, $args...);
+    }
+  }
+  
+  $__sassy-namespaces: map-merge($__sassy-namespaces, ($name: $namespace));
+  @return $namespace;
+}
+
+@function namespace-get($name, $args...) {
+  $length: length($args);
+  $namespace: map-get($__sassy-namespaces, $name);
+  
+  @if $length > 0 {
+    $keys: nth($args, 1);
+    
+    @if length($keys) == 1 {
+      @return map-get($namespace, $args...);
+    } @else {
+      @return map-get-deep($namespace, $args...);
+    }
+  } @else {
+    @return $namespace;
+  }
+}
+
+@mixin namespace-set($name, $args...) {
+  $namespace: namespace-set($name, $args...);
+}

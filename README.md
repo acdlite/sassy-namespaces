@@ -1,54 +1,122 @@
-Compass Extension Template
-==========================
+Sassy Namespaces
+================
 
-Whenever I'm creating a [Compass extension](http://compass-style.org/help/tutorials/extensions/), I find that I always use the same basic template for creating extensions, and that the project that Compass comes with isn't quite complete enough to get me where I need to be. With that in mind, I've created this little project to get you on your way. Here's a little template that I've put together to kickstart Compass extension development. Wherever it says "Extension" in the template files/file names, replace it with *your* extension's name. All files are self documented; please read the documentation there.
+Sass 3.3 brought us maps, which are great for organizing related values into groups, but the syntax is a bit tedious. Sassy Namespaces offers pattern for creating and accessing namespaces using Sass maps.
 
-## lib/extension.rb
+Yes, it's essentially a wrapper around the excellent [Sassy Maps](https://github.com/Team-Sass/Sassy-Maps) extension.
 
-Your `lib` directory is your Ruby directory. The main file in here is **extension.rb** which contains the information that Compass needs to make your Extension run like a champ.  It contains the Compass requires for other gems (like you would include in *config.rb* normally), the code to register your extension with Compass, the version number and date of the version, and any SassScript you may want to write.
+The problem
+-----------
 
-## stylesheets/_extension.scss
+In vanilla Sass, even single-level namespaces are a bit of hassle:
 
-Your `stylesheets` directory is where you write all of your extension's Sass! I've included **_extension.scss**, but you can include whatever you'd like. Write Sass or SCSS, do what works for you! Have sub folders, have sub partials, this is your playground. Important to note: make sure that every file in here is a Partial unless there is a file you specifically want to be output as a full file. Generally speaking, most Compass extensions *only* have partial files.
+```scss
+$color: ();
+$color: $map-merge($color, (primary: red));
 
-## templates/project
+foo {
+  bar: map-get($color, primary); // bar: red
+}
+```
 
-Your `templates` directory is where you store any project templates/patterns you'd like a user to be able to use. The Compass Extension documentation explains in full what a template/pattern can do, the one provided is a generic one including print, i.e., and screen stylesheets that will import your extension. This will provide users with the ability to create a new project using your Compass extension in the following way:
+You could define functions/mixins to streamline the process:
 
-`compass create <my_project> -r extension --using extension`
+```scss
+$color: ();
 
-## CHANGELOG.md/README.md
+// Setter
+@mixin set-color($key, $value) {
+  $color: $map-merge($color, ($key: $value));
+}
 
-These files aren't required for your Compass extension, but I really like including them as they are useful for Users to understand the direction of your Compass extension. Yes! That means you get to throw this README out and write your own! Do it!
+// Getter
+@function color($key) {
+  @return map-get($color, $key);
+}
 
-## extension.gemspec
+@include set-color(primary, red);
+foo {
+  bar: color(primary); // bar: red
+}
+```
 
-This is the magic file that will turn your collection of files into a packaged Compass extension! It's all laid out for you, just add/change what you need! When you're all done editing what you need, in the command line, from the directory where that lives, type the following:
+But this quickly gets tiresome, especially once you try to create namespaces with more than one level of hierarchy.
 
-`gem build extension.gemspec`
+Sass namespaces, minus the headaches
+------------------------------------
 
-This will bundle your extension up into a Ruby gem. From there, if you're just using it locally, you can install your Extension in by typing the following:
+Here's how you do it with Sassy Namespaces:
 
-`gem install extension-VERSION.gem`
+```scss
+@include create-namespace(color);
+@include namespace-set(color, primary, red);
+foo {
+  bar: namespace-get(color, primary); // bar: red;
+}
+```
 
-If you're looking to distribute your extension, first, make sure you've got a [Ruby Gems](http://rubygems.org/) account, and type in the following:
+Maps are created and used internally, but you don't ever have to deal with them.
 
-`gem push extension-VERSION.gem`
+It's still a good idea to create convenience functions/mixins. Pretty straightfoward:
 
-If you're not logged in to Ruby Gems, it will ask you to log in, then it will push your extension up to Ruby Gems! Tada! It's now distributed to the world! To install a Compass extension from Ruby Gems, it's as simple as:
+```scss
+@mixin set-color($args...) {
+  @include namespace-set(color, $args...);
+}
 
-`gem install extension`
+@function color($args...) {
+  @return namespace-get(color, $args...);
+}
 
-<hr>
+@include set-color(primary, red);
+foo {
+  bar: color(primary); // bar: red
+}
+```
 
-# AND YOU'RE DONE.
 
-<hr>
+If you want to set multiple values at once, without calling `namespace-set()` over and over, you can pass a map of keys and values (instead of a single key and a single value):
 
-## Special Thanks
-Super special thanks goes out to [Nathan Weizenbaum](https://github.com/nex3/) for Sass, [Chris Eppstein](https://github.com/chriseppstein/) for Compass, and [Mason Wendell](https://github.com/canarymason/) and [Scott Kellum](https://github.com/scottkellum/), my Compass extension partners in crime. Much of what's presented here is an amalgamation of what Chris, Mason, and Scott have taught me, so double thanks to them.
+```scss
+$map: (primary: red, secondary: green)
 
-## License
-[Creative Commons Attribution 3.0](http://creativecommons.org/licenses/by/3.0). Go wild.
+@include namespace-set(color, $map);
+foo {
+  bar: namespace-get(color, primary); // bar: red
+  baz: namespace-get(color, secondary); // baz: green
+}
+```
 
-If you're able to link me to your extension so I can see what you've built, that'd be awesome!
+And, since Sassy Namespaces uses Sassy Maps internally, hierarchical namespaces are free:
+
+```scss
+@include namespace-set(color, text link hover, green);
+foo {
+  bar: namespace-get(color, text link hover); // bar: green
+}
+```
+
+At any time, you can return the underlying namespace map:
+
+```scss
+@include namespace-set(color, primary, red);
+$namespace-1: namespace(color);
+
+@include namespace-set(color, secondary, green);
+$namespace-2: namespace(color);
+
+/*
+  $namespace-1: (
+    color: (
+      primary: red
+    )
+  )
+
+  $namespace-2: (
+    color: (
+      primary: red,
+      secondary: green
+    )
+  )
+*/
+```
