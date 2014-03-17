@@ -11,17 +11,20 @@ The problem
 In vanilla Sass, even single-level namespaces are a bit of hassle:
 
 ```scss
+// Create "color" namespace
 $color: ();
+// Add key-value pair
 $color: $map-merge($color, (primary: red));
 
-foo {
-  bar: map-get($color, primary); // bar: red
+output {
+  foo: map-get($color, primary); // foo: red
 }
 ```
 
 You could define functions/mixins to streamline the process:
 
 ```scss
+// Create "color" namespace
 $color: ();
 
 // Setter
@@ -34,9 +37,10 @@ $color: ();
   @return map-get($color, $key);
 }
 
+// Add key-value pair
 @include set-color(primary, red);
-foo {
-  bar: color(primary); // bar: red
+output {
+  foo: color(primary); // foo: red
 }
 ```
 
@@ -48,26 +52,32 @@ Sass namespaces, minus the headaches
 Here's how you do it with Sassy Namespaces:
 
 ```scss
+// Create a "color" namespace
+@include namespace-create(color);
+// Add key-value pair
 @include namespace-set(color, primary, red);
-foo {
-  bar: namespace-get(color, primary); // bar: red;
+ouput {
+  foo: namespace-get(color, primary); // foo: red;
 }
 ```
 
 Maps are created and used internally, but you don't ever have to deal with them.
 
-It's still a good idea to create convenience functions/mixins. Pretty straightfoward. Here's an example:
+It's possible streamline to this even further. `namespace-set()` will create a namespace if it doesn't exist, so we can skip `namespace-create()`.
+
+Also, instead of calling `namespace-set()` and `namespace-get()`, we can replace both with the wrapper function/mixin `namespace()`, which will either get or set as is appropriate. This comes in handy when creating aliases:
 
 ```scss
-@mixin set-color($args...) {
-  @include namespace-set(color, $args...);
+// Alias color() to namespace(color)
+@mixin color($args...) {
+  $color: namespace(color, $args...);
 }
 
 @function color($args...) {
-  @return namespace-get(color, $args...);
+  @return namespace(color, $args...);
 }
 
-@include set-color(primary, red);
+@include color(primary, red);
 foo {
   bar: color(primary); // bar: red
 }

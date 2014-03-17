@@ -32,10 +32,14 @@ $__sassy-namespaces: ();
 
 
 // Return value for key of a namespace
-// Returns the namespace map
+// Returns null if key or namespace doesn't exist
 @function namespace-get($name, $args...) {
   $length: length($args);
   $namespace: map-get($__sassy-namespaces, $name);
+  
+  @if not $namespace {
+    @return null;
+  }
   
   @if $length > 0 {
     $keys: nth($args, 1);
@@ -50,13 +54,22 @@ $__sassy-namespaces: ();
   }
 }
 
-// Mixin alias of namespace-set() function
-@mixin namespace-set($name, $args...) {
+@function namespace($args...) {
+  @return namespace-get($args...) or namespace-set($args...);
+}
+
+@mixin namespace-get($args...) {
   $namespace: namespace-set($name, $args...);
 }
 
+@mixin namespace-get($args...) {
+  $namespace: namespace-get($name, $args...);
+}
 
-// Return namespace map if it exists, else initialize an empty one
-@function namespace($name) {
-  @return namespace-get($name) or namespace-set($name);
+@mixin namespace($name, $args...) {
+  $namespace: namespace($name, $args...);
+}
+
+@mixin namespace-create($name) {
+  @include namespace-set($name);
 }
