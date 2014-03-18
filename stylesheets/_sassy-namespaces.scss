@@ -54,15 +54,15 @@ $__sassy-namespaces: ();
   }
 }
 
-@function namespace($args...) {
-  @return namespace-get($args...) or namespace-set($args...);
+@function namespace($name, $args...) {
+  @return namespace-get($name, $args...) or namespace-set($name, $args...);
 }
 
-@mixin namespace-set($args...) {
+@mixin namespace-set($name, $args...) {
   $namespace: namespace-set($name, $args...);
 }
 
-@mixin namespace-get($args...) {
+@mixin namespace-get($name, $args...) {
   $namespace: namespace-get($name, $args...);
 }
 
