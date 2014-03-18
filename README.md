@@ -79,6 +79,7 @@ Also, instead of calling `namespace-set()` and `namespace-get()`, we can replace
   @return namespace(color, $args...);
 }
 
+// Add key-value pair
 @include color(primary, red);
 output {
   foo: color(primary); // foo: red
