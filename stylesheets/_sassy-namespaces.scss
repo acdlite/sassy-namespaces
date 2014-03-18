@@ -58,7 +58,7 @@ $__sassy-namespaces: ();
   @return namespace-get($args...) or namespace-set($args...);
 }
 
-@mixin namespace-get($args...) {
+@mixin namespace-set($args...) {
   $namespace: namespace-set($name, $args...);
 }
 
