@@ -34,14 +34,17 @@ $__sassy-namespaces: ();
 // Return value for key of a namespace
 // Returns null if key or namespace doesn't exist
 @function namespace-get($name, $args...) {
-  $length: length($args);
+  $length: length($args) + 1;
   $namespace: map-get($__sassy-namespaces, $name);
   
   @if not $namespace {
     @return null;
   }
   
-  @if $length > 0 {
+  @if $length == 1 {
+    @return $namespace;
+  }
+  @else if $length == 2 {
     $keys: nth($args, 1);
     
     @if length($keys) == 1 {
@@ -49,8 +52,9 @@ $__sassy-namespaces: ();
     } @else {
       @return map-get-deep($namespace, $args...);
     }
-  } @else {
-    @return $namespace;
+  }
+  @else {
+    @return null;
   }
 }
 
