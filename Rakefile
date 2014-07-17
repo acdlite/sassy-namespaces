@@ -18,7 +18,7 @@ end
 
 desc "Tag the repo as #{spec.version} and push the code and tag."
 task :tag do
-  sh "git tag -a -m 'Version #{spec.version}' #{spec.version}"
+  sh "git tag -a -m 'Version #{spec.version}' v#{spec.version}"
   sh "git push --tags origin #{`git rev-parse --abbrev-ref HEAD`}"
 end
 
