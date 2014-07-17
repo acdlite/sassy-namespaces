@@ -1,0 +1,18 @@
+{
+  "name": "sassy-namespaces",
+  "version": "0.2.0",
+  "main": "sass/_sassy-namespaces.scss",
+  "description": "Namespaces in Sass, minus the headaches.",
+  "authors": ["Andrew Clark <acdlite@me.com>"],
+  "keywords": [
+    "sass", "namespaces", "maps"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "*.json",
+    "*.gemspec",
+    "test",
+    "Rakefile"
+  ]
+}

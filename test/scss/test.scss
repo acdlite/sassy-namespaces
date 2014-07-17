@@ -1,0 +1,79 @@
+@import "true";
+@import "../../sass/sassy-namespaces";
+
+@include test-module("[function] namespace-set()") {
+  @include test("Name only") {
+    $empty: namespace-set(empty);
+    @include assert-equal($empty, (), "should create empty namespace");
+  }
+
+  @include test("Map") {
+    $map: namespace-set(map, (
+      foo: bar
+    ));
+    @include assert-equal($map, (foo: bar), "should create namespace with map key-value pairs");
+
+    $map: namespace-set(map, (
+      bar: baz
+    ));
+    @include assert-equal($map, (foo: bar, bar: baz), "should merge map with namespace");
+  }
+
+  @include test("Key-value pair") {
+    $map: namespace-set(map, baz, foo);
+    @include assert-equal($map, (foo: bar, bar: baz, baz: foo), "should add key-value pair");
+
+    $map: namespace-set(map, nested foo, bar);
+    @include assert-equal($map, (foo: bar, bar: baz, baz: foo, nested: (foo: bar)), "should add nested key-value pair");
+
+    $map: namespace-set(map, nested foo, baz);
+    @include assert-equal($map, (foo: bar, bar: baz, baz: foo, nested: (foo: baz)), "should replace existing key-value pair");
+  }
+}
+
+@include test-module('[function] namespace-get()') {
+  @include test("No match") {
+    $nope: namespace-get(nope);
+    @include assert-equal($nope, null, "should return null");
+
+    $nope: namespace-get(nope, foo);
+    @include assert-equal($nope, null, "should return null");
+  }
+
+  @include test("Name only") {
+    $map: namespace-get(map);
+    @include assert-equal($map, (foo: bar, bar: baz, baz: foo, nested: (foo: baz)), "should return namespace map");
+  }
+
+  @include test("Key") {
+    $bar: namespace-get(map, foo);
+    @include assert-equal($bar, bar, "should return value for key");
+
+    $baz: namespace-get(map, nested foo);
+    @include assert-equal($baz, baz, "should return value for nested key");
+  }
+}
+
+@include test-module("[function] namespace()") {
+  @include test("Name only") {
+    $map: namespace(map);
+    @include assert-equal($map, (foo: bar, bar: baz, baz: foo, nested: (foo: baz)), "should return namespace map");
+  }
+
+  @include test("Map") {
+    $map2: namespace(map2, (
+      foo: bar
+    ));
+    @include assert-equal($map2, (foo: bar), "should alias to namespace-set()");
+  }
+
+  @include test("Key") {
+    $bar: namespace(map2, foo);
+    @include assert-equal($bar, bar, "should alias to namespace-get()");
+  }
+
+  @include test("Key-value pair") {
+    $map2: namespace(map2, bar, baz);
+    @include assert-equal($map2, (foo: bar, bar: baz), "should alias to namespace-set()");
+  }
+}

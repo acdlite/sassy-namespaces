@@ -1,0 +1,7 @@
+language: ruby
+script: "rake test"
+rvm:
+  - 2.0.0
+gemfile:
+  - test/Gemfile
+  - test/Gemfile.sass_master_branch

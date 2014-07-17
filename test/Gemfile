@@ -1,0 +1,7 @@
+source "https://rubygems.org"
+
+gem 'sass', '~> 3.3.10'
+gem 'compass', '~> 1.0.0.alpha.20'
+gem 'sassy-maps', '~> 0.4.0'
+gem 'true', '~> 0.2.1'
+gem 'rake', '~> 10.3.2'

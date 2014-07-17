@@ -1,56 +1,51 @@
-# Replace extension with the name of your extension's .rb file
 require './lib/sassy-namespaces'
 
 Gem::Specification.new do |s|
-  # Release Specific Information
-  #  Replace Extension with the name you used in your extension.rb
-  #   in the module with version and date.
+  # General Project Information
+  s.name = "sassy-namespaces"
   s.version = SassyNamespaces::VERSION
   s.date = SassyNamespaces::DATE
 
-  # Gem Details
-  # Replace "extension" with the name of your extension
-  s.name = "sassy-namespaces"
-  s.rubyforge_project = "sassy-namespaces"
-  # Description of your extension
-  s.description = %q{Namespaces in Sass, minus the headaches.}
-  # A summary of your Compass extension. Should be different than Description
-  s.summary = %q{Syntactic sugar for using maps as namespaces.}
-  # The names of the author(s) of the extension.
-  # If more than one author, comma separate inside of the brackets
+  # Author Information
   s.authors = ["Andrew Clark"]
-  # The email address(es) of the author(s)
-  # If more than one author, comma separate inside of the brackets
   s.email = ["acdlite@me.com"]
-  # URL of the extension
   s.homepage = "https://github.com/acdlite/sassy-namespaces"
 
-  # Gem Files
-  # These are the files to be included in your Compass extension.
-  # Uncomment those that you use.
+  # Project Description
+  s.summary = "Namespaces in Sass, minus the headaches."
+  s.description = "Namespaces in Sass, minus the headaches."
 
-  # README file
-  s.files = ["README.md"]
+  # Files to Include
+  s.require_paths = ["lib"]
 
-  # CHANGELOG
-  # s.files += ["CHANGELOG.md"]
+  s.files = Dir.glob("lib/*.*")
+  s.files += Dir.glob("sass/**/*.*")
+  s.files += ["CHANGELOG.md", "LICENSE.txt", "README.md"]
 
-  # Library Files
-  s.files += Dir.glob("lib/**/*.*")
+  # Docs Information
+  s.extra_rdoc_files = ["CHANGELOG.md", "LICENSE.txt", "README.md", "lib/sassy-namespaces.rb"]
+  s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "sassy-namespaces", "--main", "README.md"]
 
-  # Sass Files
-  s.files += Dir.glob("stylesheets/**/*.*")
+  dependencies = {
+    "sass"    => [">= 3.3.0", "< 3.5"],
+    "sassy-maps" => [">= 0.3.2", "< 0.5"]
+  }
+  # Project Dependencies
+  if s.respond_to? :specification_version then
+    s.specification_version = 3
 
-  # Template Files
-  # s.files += Dir.glob("templates/**/*.*")
-
-  # Gem Bookkeeping
-  # Versions of Ruby and Rubygems you require
-  s.required_rubygems_version = ">= 1.3.6"
-  s.rubygems_version = %q{1.3.6}
-
-  # Gems Dependencies
-  s.add_dependency("sass",       [">= 3.3"])
-  s.add_dependency("compass",    [">= 0.12"])
-  s.add_dependency("sassy-maps", [">= 0.3.2"])
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+      dependencies.each do |project, version|
+        s.add_runtime_dependency(project, *version)
+      end
+    else
+      dependencies.each do |project, version|
+        s.add_dependency(project, *version)
+      end
+    end
+  else
+    dependencies.each do |project, version|
+      s.add_dependency(project, *version)
+    end
+  end
 end
