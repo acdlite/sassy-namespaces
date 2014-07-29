@@ -1,6 +1,6 @@
 {
   "name": "sassy-namespaces",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "main": "sass/_sassy-namespaces.scss",
   "description": "Namespaces in Sass, minus the headaches.",
   "authors": ["Andrew Clark <acdlite@me.com>"],
